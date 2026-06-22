@@ -10,17 +10,20 @@ def get_rag_chain(retriever):
     llm = get_llm()
 
     prompt = ChatPromptTemplate.from_template(
-        """
-        Answer the question using only the provided context.
+    """
+    Answer the question using only the provided context.
 
-        Context:
-        {context}
+    If the answer is NOT present in the context, respond with exactly:
 
-        Question:
-        {input}
-        """
-    )
+    NOT_FOUND
 
+    Context:
+    {context}
+
+    Question:
+    {input}
+    """
+)
     document_chain = create_stuff_documents_chain(
         llm,
         prompt

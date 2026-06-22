@@ -1,0 +1,1152 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Multi-Source RAG Assistant</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!-- ========== LANDING PAGE ========== -->
+    <div id="landing-page" class="page active">
+      <!-- Navbar -->
+      <nav class="navbar">
+        <div class="nav-container">
+          <div class="nav-logo">
+            <div class="logo-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                  stroke="url(#logoGrad)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <defs>
+                  <linearGradient
+                    id="logoGrad"
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
+                    <stop offset="0%" stop-color="#2563EB" />
+                    <stop offset="100%" stop-color="#7C3AED" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <span class="logo-text"
+              >RAG<span class="logo-accent">Assistant</span></span
+            >
+          </div>
+          <div class="nav-links">
+            <a href="#features-section" class="nav-link">Features</a>
+            <a href="#architecture-section" class="nav-link">Architecture</a>
+            <a href="#about-section" class="nav-link">About</a>
+          </div>
+          <button class="btn-primary nav-cta" onclick="showChat()">
+            Get Started
+          </button>
+          <button
+            class="hamburger"
+            onclick="toggleMobileMenu()"
+            aria-label="Menu"
+          >
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+          <a
+            href="#features-section"
+            class="nav-link"
+            onclick="toggleMobileMenu()"
+            >Features</a
+          >
+          <a
+            href="#architecture-section"
+            class="nav-link"
+            onclick="toggleMobileMenu()"
+            >Architecture</a
+          >
+          <a href="#about-section" class="nav-link" onclick="toggleMobileMenu()"
+            >About</a
+          >
+          <button class="btn-primary" onclick="showChat()">Get Started</button>
+        </div>
+      </nav>
+
+      <!-- Hero -->
+      <section class="hero">
+        <div class="hero-bg">
+          <div class="orb orb-1"></div>
+          <div class="orb orb-2"></div>
+          <div class="orb orb-3"></div>
+          <div class="grid-overlay"></div>
+        </div>
+        <div class="hero-content">
+          <div class="hero-badge">
+            <span class="badge-dot"></span>
+            AI-Powered Multi-Source Research
+          </div>
+          <h1 class="hero-title">
+            Ask Anything Across
+            <span class="title-gradient"
+              >Documents, Research Papers,<br />Wikipedia</span
+            >
+            and the Web
+          </h1>
+          <p class="hero-desc">
+            Upload your PDFs and ask any question. Our intelligent RAG system
+            searches your documents first, then automatically routes to
+            Wikipedia, Arxiv, or the Web when needed — delivering precise,
+            sourced answers instantly.
+          </p>
+          <div class="hero-actions">
+            <button class="btn-primary btn-lg" onclick="showPdfManager()">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+                />
+              </svg>
+              Upload PDF
+            </button>
+            <button class="btn-outline btn-lg" onclick="showChat()">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+                />
+              </svg>
+              Start Chat
+            </button>
+          </div>
+          
+        </div>
+        <div class="hero-visual">
+          <div class="chat-preview glass-card">
+            <div class="preview-header">
+              <div class="preview-dots">
+                <span></span><span></span><span></span>
+              </div>
+              <span class="preview-title">RAG Assistant</span>
+            </div>
+            <div class="preview-messages">
+              <div class="preview-msg user">
+                What is the transformer architecture?
+              </div>
+              <div class="preview-msg assistant">
+                <span class="source-badge badge-pdf">PDF</span>
+                The transformer architecture uses self-attention mechanisms to
+                process sequences in parallel, replacing recurrent networks with
+                multi-head attention layers...
+              </div>
+              <div class="preview-msg user">
+                What are the key innovations introduced by AlphaFold?
+              </div>
+
+              <div class="preview-msg assistant">
+                <span class="source-badge badge-arxiv">Arxiv</span>
+                AlphaFold introduced deep learning-based protein structure
+                prediction, achieving near-experimental accuracy and
+                transforming computational biology and drug discovery.
+              </div>
+            </div>
+            <div class="preview-input">
+              <span>Ask anything...</span>
+              <button class="preview-send">
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Features -->
+      <section class="features-section" id="features-section">
+        <div class="section-container">
+          <div class="section-header">
+            <span class="section-eyebrow">Capabilities</span>
+            <h2 class="section-title">Everything you need to find answers</h2>
+            <p class="section-desc">
+              Intelligent retrieval across multiple knowledge sources,
+              orchestrated seamlessly by AI.
+            </p>
+          </div>
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon icon-blue">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+              </div>
+              <h3>PDF Question Answering</h3>
+              <p>
+                Upload any PDF and ask questions directly. RAG retrieves the
+                most relevant passages and generates accurate, grounded answers.
+              </p>
+              <div class="feature-tag tag-blue">Primary Source</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon icon-green">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path
+                    d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"
+                  />
+                </svg>
+              </div>
+              <h3>Wikipedia Search</h3>
+              <p>
+                When your documents don't have the answer, the system queries
+                Wikipedia for encyclopedic knowledge on any topic.
+              </p>
+              <div class="feature-tag tag-green">Fallback Source</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon icon-purple">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
+                  <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
+                </svg>
+              </div>
+              <h3>Arxiv Research Papers</h3>
+              <p>
+                Access millions of preprints across physics, mathematics, CS,
+                and more. Perfect for technical and academic queries.
+              </p>
+              <div class="feature-tag tag-purple">Research Source</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon icon-orange">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+              </div>
+              <h3>Web Search</h3>
+              <p>
+                Broad web search capability ensures no question goes unanswered,
+                pulling from current, real-world information.
+              </p>
+              <div class="feature-tag tag-orange">Web Source</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon icon-blue">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+              </div>
+              <h3>Intelligent Query Routing</h3>
+              <p>
+                AI analyzes each query and automatically selects the best source
+                — PDF first, then intelligently routes to external knowledge.
+              </p>
+              <div class="feature-tag tag-blue">Smart Logic</div>
+            </div>
+            <div class="feature-card">
+              <div class="feature-icon icon-green">
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+              </div>
+              <h3>Fast AI Responses</h3>
+              <p>
+                Powered by state-of-the-art language models with optimized
+                retrieval pipelines for sub-second response generation.
+              </p>
+              <div class="feature-tag tag-green">Performance</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Architecture -->
+      <section class="architecture-section" id="architecture-section">
+        <div class="section-container">
+          <div class="section-header">
+            <span class="section-eyebrow">How it works</span>
+            <h2 class="section-title">Intelligent query routing pipeline</h2>
+            <p class="section-desc">
+              A multi-stage retrieval pipeline that finds the best answer from
+              the right source.
+            </p>
+          </div>
+          <div class="arch-wrapper">
+            <div class="arch-flow">
+              <!-- Step 1 -->
+              <div class="arch-step">
+                <div class="arch-node node-user">
+                  <div class="arch-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                      <circle cx="12" cy="7" r="4" />
+                    </svg>
+                  </div>
+                  <span>User Question</span>
+                </div>
+                <div class="arch-arrow">
+                  <svg width="20" height="32" viewBox="0 0 20 32">
+                    <line
+                      x1="10"
+                      y1="0"
+                      x2="10"
+                      y2="24"
+                      stroke="#475569"
+                      stroke-width="1.5"
+                      stroke-dasharray="4,3"
+                    />
+                    <polygon points="5,22 10,32 15,22" fill="#475569" />
+                  </svg>
+                </div>
+              </div>
+              <!-- Step 2 -->
+              <div class="arch-step">
+                <div class="arch-node node-pdf">
+                  <div class="arch-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                      />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                  </div>
+                  <span>PDF Search (RAG)</span>
+                </div>
+                <div class="arch-arrow">
+                  <svg width="20" height="32" viewBox="0 0 20 32">
+                    <line
+                      x1="10"
+                      y1="0"
+                      x2="10"
+                      y2="24"
+                      stroke="#475569"
+                      stroke-width="1.5"
+                      stroke-dasharray="4,3"
+                    />
+                    <polygon points="5,22 10,32 15,22" fill="#475569" />
+                  </svg>
+                </div>
+              </div>
+              <!-- Decision -->
+              <div class="arch-step">
+                <div class="arch-decision">
+                  <span>Answer Found?</span>
+                </div>
+                <!-- Branch yes/no -->
+                <div class="arch-branches">
+                  <div class="branch branch-yes">
+                    <div class="branch-line">
+                      <svg width="100" height="40" viewBox="0 0 100 40">
+                        <path
+                          d="M50 0 L50 15 L10 15 L10 40"
+                          stroke="#10B981"
+                          stroke-width="1.5"
+                          fill="none"
+                          stroke-dasharray="4,3"
+                        />
+                        <polygon points="5,36 10,46 15,36" fill="#10B981" />
+                      </svg>
+                    </div>
+                    <div class="branch-label label-yes">Yes</div>
+                    <div class="arch-node node-answer">
+                      <div class="arch-icon">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <span>Direct Answer</span>
+                    </div>
+                  </div>
+                  <div class="branch branch-no">
+                    <div class="branch-line">
+                      <svg width="100" height="40" viewBox="0 0 100 40">
+                        <path
+                          d="M50 0 L50 15 L90 15 L90 40"
+                          stroke="#EF4444"
+                          stroke-width="1.5"
+                          fill="none"
+                          stroke-dasharray="4,3"
+                        />
+                        <polygon points="85,36 90,46 95,36" fill="#EF4444" />
+                      </svg>
+                    </div>
+                    <div class="branch-label label-no">No</div>
+                    <div class="arch-node node-router">
+                      <div class="arch-icon">
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                        >
+                          <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                        </svg>
+                      </div>
+                      <span>AI Router</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Sources -->
+              <div class="arch-sources">
+                <div class="arch-source source-wiki">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="2" y1="12" x2="22" y2="12" />
+                    <path
+                      d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"
+                    />
+                  </svg>
+                  Wikipedia
+                </div>
+                <div class="arch-source source-arxiv">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
+                    <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
+                  </svg>
+                  Arxiv
+                </div>
+                <div class="arch-source source-web">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                  </svg>
+                  Web Search
+                </div>
+              </div>
+              <!-- Final Answer -->
+              <div class="arch-final">
+                <div class="arch-arrow">
+                  <svg width="20" height="32" viewBox="0 0 20 32">
+                    <line
+                      x1="10"
+                      y1="0"
+                      x2="10"
+                      y2="24"
+                      stroke="#475569"
+                      stroke-width="1.5"
+                      stroke-dasharray="4,3"
+                    />
+                    <polygon points="5,22 10,32 15,22" fill="#475569" />
+                  </svg>
+                </div>
+                <div class="arch-node node-final">
+                  <div class="arch-icon">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <path
+                        d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+                      />
+                    </svg>
+                  </div>
+                  <span>Sourced Answer</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About -->
+      <section class="about-section" id="about-section">
+        <div class="section-container">
+          <div class="about-grid">
+            <div class="about-text">
+              <span class="section-eyebrow">About</span>
+              <h2 class="section-title">
+                Built for researchers, students, and knowledge workers
+              </h2>
+              <p>
+                Multi-Source RAG Assistant combines retrieval-augmented
+                generation with intelligent routing to give you answers grounded
+                in real sources — not hallucinations.
+              </p>
+              <p>
+                Whether you're analyzing academic papers, doing competitive
+                research, or just need a fact checked, the assistant finds the
+                right source automatically and cites it clearly.
+              </p>
+              <button class="btn-primary" onclick="showChat()">
+                Try it now →
+              </button>
+            </div>
+            <div class="about-cards">
+              <div class="about-stat-card glass-card">
+                <div class="about-stat-icon" style="color: #2563eb">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                </div>
+                <h4>Source-grounded</h4>
+                <p>
+                  Every answer includes its source — PDF, Wikipedia, Arxiv, or
+                  Web — so you can verify and trust the output.
+                </p>
+              </div>
+              <div class="about-stat-card glass-card">
+                <div class="about-stat-icon" style="color: #7c3aed">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.8"
+                  >
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                  </svg>
+                </div>
+                <h4>Zero-config routing</h4>
+                <p>
+                  No need to choose a source manually. The AI analyzes your
+                  query and picks the best retrieval strategy automatically.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="footer-container">
+          <div class="footer-logo">
+            <div class="logo-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                  stroke="url(#fg2)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <defs>
+                  <linearGradient id="fg2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#2563EB" />
+                    <stop offset="100%" stop-color="#7C3AED" />
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <span class="logo-text"
+              >RAG<span class="logo-accent">Assistant</span></span
+            >
+          </div>
+          <div class="footer-links">
+            <a href="#features-section">Features</a>
+            <a href="#architecture-section">Architecture</a>
+            <a href="#about-section">About</a>
+          </div>
+          <p class="footer-copy">
+            Built with RAG · LLM-powered · Multi-source retrieval
+          </p>
+        </div>
+      </footer>
+    </div>
+
+    <!-- ========== CHAT PAGE ========== -->
+    <div id="chat-page" class="page">
+      <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-header">
+            <div class="nav-logo sidebar-logo">
+              <div class="logo-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                    stroke="url(#sg)"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <defs>
+                    <linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#2563EB" />
+                      <stop offset="100%" stop-color="#7C3AED" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+              <span class="logo-text"
+                >RAG<span class="logo-accent">AI</span></span
+              >
+            </div>
+            <button
+              class="sidebar-close"
+              onclick="toggleSidebar()"
+              aria-label="Close sidebar"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+
+          <button class="new-chat-btn" onclick="newChat()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            New Chat
+          </button>
+
+          <div class="sidebar-section">
+            <div class="sidebar-section-header">
+              <span>Uploaded PDFs</span>
+              <button
+                class="sidebar-upload-btn"
+                onclick="showPdfManager()"
+                title="Manage PDFs"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="pdf-list" id="sidebarPdfList">
+              <div class="pdf-list-empty">
+                <svg
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                >
+                  <path
+                    d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <span>No PDFs uploaded</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="sidebar-section-header">
+              <span>Recent Chats</span>
+            </div>
+            <div class="chat-history" id="chatHistory"></div>
+          </div>
+
+          <div class="sidebar-bottom">
+            <button class="sidebar-nav-btn" onclick="showLanding()">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              Home
+            </button>
+            <button class="sidebar-nav-btn" onclick="showPdfManager()">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+              Manage PDFs
+            </button>
+          </div>
+        </aside>
+
+        <!-- Overlay for mobile sidebar -->
+        <div
+          class="sidebar-overlay"
+          id="sidebarOverlay"
+          onclick="toggleSidebar()"
+        ></div>
+
+        <!-- Main Chat -->
+        <main class="chat-main">
+          <div class="chat-topbar">
+            <button
+              class="topbar-menu-btn"
+              onclick="toggleSidebar()"
+              aria-label="Toggle sidebar"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+            <span class="chat-topbar-title" id="chatTopbarTitle">New Chat</span>
+            <div class="topbar-sources">
+              <span class="source-indicator si-pdf">PDF</span>
+              <span class="source-indicator si-wiki">Wiki</span>
+              <span class="source-indicator si-arxiv">Arxiv</span>
+              <span class="source-indicator si-web">Web</span>
+            </div>
+          </div>
+
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-welcome" id="chatWelcome">
+              <div class="welcome-logo">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                    stroke="url(#wg)"
+                    stroke-width="1.8"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <defs>
+                    <linearGradient id="wg" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#2563EB" />
+                      <stop offset="100%" stop-color="#7C3AED" />
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+              <h2>Multi-Source RAG Assistant</h2>
+              <p>
+                Ask any question. I'll search your PDFs first, then
+                intelligently route to Wikipedia, Arxiv, or the Web.
+              </p>
+              <div class="welcome-suggestions">
+                <button
+                  class="suggestion-chip"
+                  onclick="
+                    sendSuggestion(
+                      'What is the attention mechanism in transformers?',
+                    )
+                  "
+                >
+                  What is the attention mechanism?
+                </button>
+                <button
+                  class="suggestion-chip"
+                  onclick="sendSuggestion('Who was Maharana Pratap?')"
+                >
+                  Who was Maharana Pratap?
+                </button>
+                <button
+                  class="suggestion-chip"
+                  onclick="
+                    sendSuggestion('Explain retrieval augmented generation')
+                  "
+                >
+                  Explain RAG
+                </button>
+                <button
+                  class="suggestion-chip"
+                  onclick="
+                    sendSuggestion('What are the latest LLM benchmarks?')
+                  "
+                >
+                  Latest LLM benchmarks
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input Area -->
+          <div class="chat-input-area">
+            <div class="chat-input-wrapper">
+              <div class="input-row">
+                <div class="input-container">
+                  <textarea
+                    id="chatInput"
+                    class="chat-textarea"
+                    placeholder="Ask anything across your PDFs, Wikipedia, Arxiv and the Web..."
+                    rows="1"
+                    onkeydown="handleInputKeydown(event)"
+                    oninput="autoResizeTextarea(this)"
+                  ></textarea>
+                  <div class="input-actions">
+                    <button
+                      class="input-upload-btn"
+                      onclick="showPdfManager()"
+                      title="Upload PDF"
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <path
+                          d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      class="input-send-btn"
+                      id="sendBtn"
+                      onclick="sendMessage()"
+                      disabled
+                    >
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      >
+                        <line x1="22" y1="2" x2="11" y2="13" />
+                        <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <p class="input-hint">
+                Sources: PDF → Wikipedia → Arxiv → Web · Press Enter to send
+              </p>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ========== PDF MANAGER PAGE ========== -->
+    <div id="pdf-page" class="page">
+      <div class="pdf-manager">
+        <div class="pdf-manager-header">
+          <button class="back-btn" onclick="goBack()">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <line x1="19" y1="12" x2="5" y2="12" />
+              <polyline points="12 19 5 12 12 5" />
+            </svg>
+            Back
+          </button>
+          <h1>PDF Manager</h1>
+          <p>Upload and manage your PDF documents for RAG-powered Q&A</p>
+        </div>
+
+        <!-- Upload Zone -->
+        <div
+          class="upload-zone"
+          id="uploadZone"
+          onclick="triggerFileInput()"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          ondrop="handleDrop(event)"
+        >
+          <input
+            type="file"
+            id="pdfFileInput"
+            accept=".pdf"
+            multiple
+            style="display: none"
+            onchange="handleFileSelect(event)"
+          />
+          <div class="upload-zone-content">
+            <div class="upload-icon">
+              <svg
+                width="36"
+                height="36"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+              >
+                <path
+                  d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+                />
+              </svg>
+            </div>
+            <h3>Drop PDFs here or click to browse</h3>
+            <p>Supports multiple PDF files · Max 50MB each</p>
+            <button
+              class="btn-primary"
+              onclick="
+                event.stopPropagation();
+                triggerFileInput();
+              "
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"
+                />
+              </svg>
+              Select PDFs
+            </button>
+          </div>
+        </div>
+
+        <!-- Upload Progress -->
+        <div class="upload-progress-list" id="uploadProgressList"></div>
+
+        <!-- Uploaded PDFs Grid -->
+        <div class="uploaded-section">
+          <div class="uploaded-header">
+            <h2>Uploaded Documents</h2>
+            <span class="pdf-count" id="pdfCountBadge">0 files</span>
+          </div>
+          <div class="pdfs-grid" id="pdfsGrid">
+            <div class="pdfs-empty" id="pdfsEmpty">
+              <svg
+                width="48"
+                height="48"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1"
+              >
+                <path
+                  d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
+                />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="16" y1="13" x2="8" y2="13" />
+                <line x1="16" y1="17" x2="8" y2="17" />
+              </svg>
+              <h3>No PDFs uploaded yet</h3>
+              <p>Upload PDF files to start asking questions about them.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pdf-manager-footer">
+          <button class="btn-primary btn-lg" onclick="showChat()">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"
+              />
+            </svg>
+            Go to Chat
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal-overlay" id="deleteModal" onclick="closeDeleteModal()">
+      <div class="modal glass-card" onclick="event.stopPropagation()">
+        <div class="modal-icon modal-icon-danger">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
+            <path d="M10 11v6M14 11v6" />
+            <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2" />
+          </svg>
+        </div>
+        <h3>Delete PDF?</h3>
+        <p id="deleteModalName">Are you sure you want to delete this file?</p>
+        <div class="modal-actions">
+          <button class="btn-outline" onclick="closeDeleteModal()">
+            Cancel
+          </button>
+          <button class="btn-danger" onclick="confirmDelete()">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

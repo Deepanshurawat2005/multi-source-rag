@@ -1,59 +1,48 @@
 from router.source_router import classify_query
-
 from tools.wikipedia_tool import get_wikipedia_tool
 from tools.arxiv_tool import arxiv_search
 from tools.web_search_tool import get_web_search_tool
-
 from llm.llm import get_llm
-
-
 def generate_answer(question, context):
 
     llm = get_llm()
 
     prompt = f"""
-    Answer the user's question using ONLY the provided context.
+You are a helpful AI assistant.
 
-    If the context is insufficient, say so.
+Answer the question in detail.
 
-    Context:
-    {context}
+Rules:
+- Give a complete answer.
+- Explain important facts.
+- Use multiple paragraphs when needed.
+- Do not say "according to the context".
+- Do not say "based on the provided information".
+- Start directly with the answer.
 
-    Question:
-    {question}
+Context:
+{context}
 
-    Give a detailed and helpful answer.
-    """
+Question:
+{question}
+"""
 
     response = llm.invoke(prompt)
 
     return response.content
 
-
 def route_query(question, vector_store, rag_chain):
 
     # STEP 1 : PDF FIRST
+
     rag_response = rag_chain.invoke(
         {"input": question}
     )
 
     pdf_answer = rag_response["answer"]
 
-    failure_phrases = [
-        "there is no mention",
-        "not mentioned",
-        "not present",
-        "cannot be found",
-        "provided context does not",
-        "unfortunately",
-    ]
-
-    pdf_found = not any(
-        phrase in pdf_answer.lower()
-        for phrase in failure_phrases
-    )
-
-    if pdf_found:
+    # If answer found in PDF
+    if pdf_answer.strip() != "NOT_FOUND":
         return {
             "source": "PDF",
             "answer": pdf_answer

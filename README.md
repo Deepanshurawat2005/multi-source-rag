@@ -1,4 +1,4 @@
-# 🚀 Multi-Source RAG System
+# Multi-Source RAG System
 
 An intelligent **Multi-Source Retrieval-Augmented Generation (RAG)** application that answers user queries by combining information from multiple knowledge sources including **PDF documents, Wikipedia, Arxiv research papers, and Web Search**.
 
