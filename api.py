@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import os
 
-from rag.pdf_loader import load_pdf
+from rag.pdf_loader import load_all_pdfs
 from rag.text_splitter import split_documents
 from rag.vector_store import create_vector_store
 from rag.retriever import get_retriever
@@ -23,31 +23,20 @@ app.add_middleware(
 
 UPLOAD_FOLDER = "data/uploaded_pdfs"
 
-# =========================
-# LOAD ALL PDFs ON STARTUP
-# =========================
+vector_store = None
+rag_chain = None
 
-docs = []
 
-if os.path.exists(UPLOAD_FOLDER):
+def rebuild_vector_db():
+    global vector_store
+    global rag_chain
 
-    pdf_files = [
-        f for f in os.listdir(UPLOAD_FOLDER)
-        if f.endswith(".pdf")
-    ]
+    docs = load_all_pdfs()
 
-    for pdf_file in pdf_files:
-
-        pdf_path = os.path.join(
-            UPLOAD_FOLDER,
-            pdf_file
-        )
-
-        docs.extend(
-            load_pdf(pdf_path)
-        )
-
-if len(docs) > 0:
+    if len(docs) == 0:
+        vector_store = None
+        rag_chain = None
+        return
 
     chunks = split_documents(docs)
 
@@ -57,10 +46,12 @@ if len(docs) > 0:
 
     rag_chain = get_rag_chain(retriever)
 
-else:
 
-    vector_store = None
-    rag_chain = None
+# =========================
+# LOAD PDFs ON STARTUP
+# =========================
+
+rebuild_vector_db()
 
 
 class ChatRequest(BaseModel):
@@ -74,6 +65,12 @@ def root():
 
 @app.post("/api/chat")
 async def chat(request: ChatRequest):
+
+    if vector_store is None or rag_chain is None:
+        return {
+            "source": "System",
+            "answer": "No PDFs uploaded yet."
+        }
 
     response = route_query(
         question=request.question,
@@ -97,62 +94,47 @@ async def upload_pdf(file: UploadFile = File(...)):
     with open(filepath, "wb") as f:
         f.write(await file.read())
 
-    # =========================
-    # REBUILD VECTOR DB
-    # =========================
-
-    global vector_store
-    global rag_chain
-
-    all_docs = []
-
-    pdf_files = [
-        f for f in os.listdir(UPLOAD_FOLDER)
-        if f.endswith(".pdf")
-    ]
-
-    for pdf_file in pdf_files:
-
-        pdf_path = os.path.join(
-            UPLOAD_FOLDER,
-            pdf_file
-        )
-
-        all_docs.extend(
-            load_pdf(pdf_path)
-        )
-
-    chunks = split_documents(all_docs)
-
-    vector_store = create_vector_store(chunks)
-
-    retriever = get_retriever(vector_store)
-
-    rag_chain = get_rag_chain(retriever)
+    rebuild_vector_db()
 
     return {
         "success": True,
         "filename": file.filename
     }
+
+
+@app.get("/api/pdfs")
+async def get_pdfs():
+
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+    pdfs = [
+        {"name": file}
+        for file in os.listdir(UPLOAD_FOLDER)
+        if file.endswith(".pdf")
+    ]
+
+    return pdfs
+
+
 @app.delete("/api/delete/{filename}")
 async def delete_pdf(filename: str):
-
-    print("DELETE CALLED")
-    print("Filename:", filename)
 
     filepath = os.path.join(
         UPLOAD_FOLDER,
         filename
     )
 
-    print("Path:", filepath)
-
     if os.path.exists(filepath):
+
         os.remove(filepath)
-        print("DELETED")
 
-        return {"success": True}
+        rebuild_vector_db()
 
-    print("FILE NOT FOUND")
+        return {
+            "success": True
+        }
 
-    return {"success": False}
+    return {
+        "success": False,
+        "message": "File not found"
+    }

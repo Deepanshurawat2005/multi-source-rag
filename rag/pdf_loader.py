@@ -1,13 +1,24 @@
+import os
 from langchain_community.document_loaders import PyPDFLoader
 
+PDF_FOLDER = "data/uploaded_pdfs"
 
-def load_pdf(pdf_path):
-    """
-    Load PDF and return documents.
-    """
+def load_all_pdfs():
+    all_docs = []
 
-    loader = PyPDFLoader(pdf_path)
+    for file in os.listdir(PDF_FOLDER):
 
-    documents = loader.load()
+        if file.endswith(".pdf"):
 
-    return documents
+            pdf_path = os.path.join(PDF_FOLDER, file)
+
+            loader = PyPDFLoader(pdf_path)
+
+            docs = loader.load()
+
+            for doc in docs:
+                doc.metadata["source_file"] = file
+
+            all_docs.extend(docs)
+
+    return all_docs

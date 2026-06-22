@@ -1,17 +1,15 @@
-from rag.pdf_loader import load_pdf
 from rag.text_splitter import split_documents
 from rag.vector_store import create_vector_store
 from rag.retriever import get_retriever
 from rag.rag_chain import get_rag_chain
 
+from rag.pdf_loader import load_all_pdfs
 from router.query_router import route_query
 
 
 def main():
 
-    pdf_path = "data/uploaded_pdfs/AttentionIsAllYouNeed.pdf"
-
-    docs = load_pdf(pdf_path)
+    docs = load_all_pdfs()
 
     chunks = split_documents(docs)
 
