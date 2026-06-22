@@ -19,7 +19,7 @@ __pycache__/
 
 # Mac
 .DS_Store
-
+temp(progress).txt
 
 # Vector Database
 vectorstore/faiss_index/
