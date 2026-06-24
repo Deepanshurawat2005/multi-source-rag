@@ -33,11 +33,13 @@ data/uploaded_pdfs/
 #temporary files
 temp(progress).txt
 Todo.txt
+
 # Build Files
 build/
 dist/
 *.egg-info/
-
+#notebook
+notebook/
 # Coverage
 .coverage
 htmlcov/
