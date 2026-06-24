@@ -23,6 +23,28 @@ app.add_middleware(
 
 UPLOAD_FOLDER = "data/uploaded_pdfs"
 
+# =========================
+# CLEAR PDFs ON STARTUP
+# =========================
+
+@app.on_event("startup")
+async def clear_uploaded_pdfs():
+
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+    for file in os.listdir(UPLOAD_FOLDER):
+
+        file_path = os.path.join(
+            UPLOAD_FOLDER,
+            file
+        )
+
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
+    print("All uploaded PDFs cleared")
+
+
 vector_store = None
 rag_chain = None
 
@@ -47,13 +69,6 @@ def rebuild_vector_db():
     rag_chain = get_rag_chain(retriever)
 
 
-# =========================
-# LOAD PDFs ON STARTUP
-# =========================
-
-rebuild_vector_db()
-
-
 class ChatRequest(BaseModel):
     question: str
 
@@ -65,12 +80,6 @@ def root():
 
 @app.post("/api/chat")
 async def chat(request: ChatRequest):
-
-    if vector_store is None or rag_chain is None:
-        return {
-            "source": "System",
-            "answer": "No PDFs uploaded yet."
-        }
 
     response = route_query(
         question=request.question,

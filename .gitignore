@@ -19,7 +19,7 @@ __pycache__/
 
 # Mac
 .DS_Store
-temp(progress).txt
+
 
 # Vector Database
 vectorstore/faiss_index/
@@ -30,6 +30,9 @@ data/uploaded_pdfs/
 # Logs
 *.log
 
+#temporary files
+temp(progress).txt
+Todo.txt
 # Build Files
 build/
 dist/

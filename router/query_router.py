@@ -35,18 +35,20 @@ def route_query(question, vector_store, rag_chain):
 
     # STEP 1 : PDF FIRST
 
-    rag_response = rag_chain.invoke(
-        {"input": question}
-    )
+    if rag_chain is not None:
 
-    pdf_answer = rag_response["answer"]
+        rag_response = rag_chain.invoke(
+            {"input": question}
+        )
 
-    # If answer found in PDF
-    if pdf_answer.strip() != "NOT_FOUND":
-        return {
-            "source": "PDF",
-            "answer": pdf_answer
-        }
+        pdf_answer = rag_response["answer"]
+
+        # If answer found in PDF
+        if pdf_answer.strip() != "NOT_FOUND":
+            return {
+                "source": "PDF",
+                "answer": pdf_answer
+            }
 
     # STEP 2 : ROUTE TO BEST SOURCE
 
